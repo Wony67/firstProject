@@ -1,0 +1,81 @@
+조 테이블 쿼리!
+    
+CREATE TABLE member (
+    tel         VARCHAR2(20),
+    pw          VARCHAR2(20)        NOT NULL,
+    nic         VARCHAR2(20)        UNIQUE,
+    name      VARCHAR2(20)        NOT NULL,
+    birth       DATE	         NOT NULL,
+    pim	     VARCHAR2(20)         DEFAULT 'dpim.jpg',
+    
+    CONSTRAINT member_pk PRIMARY KEY (tel)
+    );
+    
+CREATE TABLE board (
+    bno         NUMBER,
+    nic         VARCHAR2(20),
+    content     VARCHAR2(500)   NOT NULL,
+    open_lv     NUMBER(4)       NOT NULL,
+    pic         VARCHAR2(100),
+    wtime       DATE            DEFAULT SYSDATE,
+    slike        NUMBER          DEFAULT 0,
+    
+    CONSTRAINT board_pk PRIMARY KEY (bno),
+    CONSTRAINT board_fk FOREIGN KEY(nic) REFERENCES member(nic)
+    );
+    
+CREATE TABLE scomment (
+    cno         NUMBER,
+    nic         VARCHAR2(20),
+    reply       VARCHAR2(500)           NOT NULL,
+    bno         NUMBER,
+    
+     CONSTRAINT scomment_pk PRIMARY KEY (cno),
+     CONSTRAINT scomment_fk_1 FOREIGN KEY(nic) REFERENCES member(nic),
+     CONSTRAINT scomment_fk_2 FOREIGN KEY(bno) REFERENCES board(bno)
+    );
+    
+CREATE TABLE slike (
+    bno         NUMBER,
+    nic         VARCHAR2(20),
+    
+    CONSTRAINT slike_fk_1 FOREIGN KEY(bno) REFERENCES board(bno),
+    CONSTRAINT slike_fk_2 FOREIGN KEY(nic) REFERENCES member(nic)
+);
+
+CREATE TABLE friends (
+    user1       VARCHAR2(20),
+    user2       VARCHAR2(20),
+    f_lv        NUMBER,
+    
+    CONSTRAINT friends_fk_1 FOREIGN KEY(user1) REFERENCES member(nic),
+    CONSTRAINT friends_fk_2 FOREIGN KEY(user2) REFERENCES member(nic)
+);
+
+CREATE TABLE bookmark (
+    bno     NUMBER,
+    nic     VARCHAR2(20),
+    
+    CONSTRAINT mark_fk_1 FOREIGN KEY(bno) REFERENCES board(bno),
+    CONSTRAINT mark_fk_2 FOREIGN KEY(nic) REFERENCES member(nic)
+);
+
+CREATE SEQUENCE board_seq;
+CREATE SEQUENCE comment_seq;
+
+INSERT INTO member VALUES('111-1111', '1234', 'aaa', 'aaa', '90/01/01', 'dpim.jpg');
+INSERT INTO member VALUES('222-2222', '1234', 'bbb', 'bbb', '90/02/02', 'dpim.jpg');
+INSERT INTO board VALUES(1, 'aaa', 'hello my friend!', 2, 'hello.jpg', SYSDATE, 0);
+INSERT INTO scomment VALUES(1, 'aaa', 'say hello', 1);
+INSERT INTO slike VALUES(1,'aaa');
+INSERT INTO friends VALUES('aaa', 'bbb', 2);
+INSERT INTO friends VALUES('bbb', 'aaa', 1);
+INSERT INTO bookmark VALUES(1, 'aaa');
+
+COMMIT;
+
+SELECT * FROM member;
+SELECT * FROM board;
+SELECT * FROM scomment;
+SELECT * FROM slike;
+SELECT * FROM friends;

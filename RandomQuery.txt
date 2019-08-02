@@ -1,0 +1,11 @@
+--내글 제외한 글 검색
+SELECT rownum, nic, pic, open_lv FROM board WHERE nic NOT LIKE 'aaa'; 
+
+--내글 제외한 글 갯수
+SELECT COUNT(*) FROM (SELECT rownum, nic, pic, open_lv FROM board WHERE nic NOT LIKE 'aaa'); 
+
+--랜덤으로 5개 글 추출
+SELECT * FROM (SELECT rownum, nic, pic, open_lv FROM board WHERE nic NOT LIKE 'aaa' ORDER BY DBMS_RANDOM.VALUE) WHERE rownum < 6;
+
+--내글과 친구 글 제외-랜덤
+SELECT rownum, nic, pic, open_lv FROM board WHERE nic NOT LIKE 'aaa' AND nic NOT IN (SELECT user2 FROM friends WHERE user1 = 'aaa') ORDER BY DBMS_RANDOM.VALUE; 
